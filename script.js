@@ -1,51 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const wheel = document.getElementById('wheel');
-    const spinBtn = document.getElementById('spinBtn');
-    const resultBox = document.getElementById('result');
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const spinBtn = document.getElementById("spin");
+const resultDiv = document.getElementById("result");
 
-    // 1. الخيارات التي تريدها في دولاب الحظ
-    const prizes = [
-        "خصم 25%", 
-        "حسناً، دوّر مرة أخرى", 
-        "جائزة بسيطة", 
-        "حظ أوفر المرة القادمة", 
-        "شحن مجاني",
-        "جائزة كبرى!"
-    ];
-    
-    // يمكننا استخدام Canvas لرسم الأجزاء هنا، لكن لتبسيط التجربة سنعتمد على التدوير فقط حالياً.
-    
-    let isSpinning = false;
-    
-    spinBtn.addEventListener('click', () => {
-        if (isSpinning) return;
-        
-        isSpinning = true;
-        resultBox.textContent = 'الدولاب يدور...';
-        
-        // 2. تحديد النتيجة عشوائياً (اختيار رقم من 0 حتى عدد الخيارات - 1)
-        const winningIndex = Math.floor(Math.random() * prizes.length);
-        const winningPrize = prizes[winningIndex];
-        
-        // 3. محاكاة الدوران
-        // لفة كاملة (360 درجة) × 10 مرات + زاوية عشوائية للمحاكاة
-        const randomRotation = Math.floor(Math.random() * 360); 
-        const totalRotation = (360 * 10) + randomRotation;
-        
-        // تطبيق التدوير (في بيئة العمل الحقيقية، نحتاج لزاوية دقيقة)
-        wheel.style.transform = `rotate(${totalRotation}deg)`;
+const segments = ["جائزة 🎁", "فرصة أخرى 🔄", "لا شيء 😢", "خصم %50", "هدايا 🎉", "محاولة مجانية"];
+const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"];
+let angle = 0;
+let spinning = false;
 
-        // 4. عرض النتيجة بعد انتهاء وقت التحريك (5 ثواني كما في CSS)
-        setTimeout(() => {
-            isSpinning = false;
-            resultBox.innerHTML = `**ألف مبروك!** لقد فزت بـ: <span>${winningPrize}</span>`;
-            
-            // إضافة زر المشاركة على واتساب
-            const whatsappMsg = `لقد فزت في دولاب الحظ بـ: ${winningPrize}!`;
-            const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMsg)}`;
-            
-            resultBox.innerHTML += `<br><a href="${whatsappLink}" target="_blank" style="display:inline-block; margin-top:10px; padding:8px 15px; background-color: #25D366; color: white; text-decoration: none; border-radius: 5px;">شارك فوزك على واتساب</a>`;
-            
-        }, 5000); // 5000ms = 5 ثواني (مطابقة لوقت الانتقال في CSS)
-    });
-});
+function drawWheel() {
+  const segmentAngle = (2 * Math.PI) / segments.length;
+  for (let i = 0; i < segments.length; i++) {
+    ctx.beginPath();
+    ctx.moveTo(250, 250);
+    ctx.arc(250, 250, 250, i * segmentAngle, (i + 1) * segmentAngle);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    ctx.save();
+    ctx.translate(250, 250);
+    ctx.rotate(i * segmentAngle + segmentAngle / 2);
+    ctx.fillStyle = "#fff";
+    ctx.font = "18px Arial";
+    ctx.fillText(segments[i], 100, 0);
+    ctx.restore();
+  }
+}
+
+function spinWheel() {
+  if (spinning) return;
+  spinning = true;
+  let spinAngle = Math.random() * 360 + 720;
+  let currentAngle = 0;
+  const interval = setInterval(() => {
+    currentAngle += 10;
+    angle = (angle + 10) % 360;
+    canvas.style.transform = `rotate(${angle}deg)`;
+    if (currentAngle >= spinAngle) {
+      clearInterval(interval);
+      const segmentIndex = Math.floor(((360 - angle % 360) / 360) * segments.length) % segments.length;
+      resultDiv.textContent = `النتيجة: ${segments[segmentIndex]}`;
+      spinning = false;
+    }
+  }, 20);
+}
+
+drawWheel();
+spinBtn.addEventListener("click", spinWheel);
