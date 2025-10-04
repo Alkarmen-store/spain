@@ -1,0 +1,70 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    flex-direction: column;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.wheel-container {
+    position: relative;
+    display: inline-block;
+}
+
+#wheel {
+    border: 5px solid #333;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* تحريك سلس */
+}
+
+.pointer {
+    position: absolute;
+    top: 50%;
+    right: -20px; /* ضبط المؤشر ليكون على الحافة */
+    transform: translateY(-50%) rotate(90deg); /* تدوير لجعل المؤشر يشير */
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 20px solid red;
+    z-index: 10;
+}
+
+#spinBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#spinBtn:hover {
+    background-color: #0056b3;
+}
+
+.result-box {
+    margin-top: 25px;
+    padding: 15px;
+    min-height: 50px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+}
