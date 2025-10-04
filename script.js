@@ -4,7 +4,7 @@ const spinBtn = document.getElementById("spin");
 const resultDiv = document.getElementById("result");
 
 const segments = [
-  "🎁 جائزة",
+  "🎁 فستان مجاني",
   "🔄 فرصة أخرى",
   "😢 لا شيء",
   "💸 خصم %50",
